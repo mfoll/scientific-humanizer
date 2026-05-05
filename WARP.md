@@ -3,51 +3,50 @@
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
 ## What this repo is
-This repository is a **Claude Code skill** implemented entirely as Markdown.
+This repository is a **scientific writing skill** implemented mostly as Markdown,
+with one optional Python audit script.
 
-The “runtime” artifact is `SKILL.md`: Claude Code reads the YAML frontmatter (metadata + allowed tools) and the prompt/instructions that follow.
+The runtime artifact is `SKILL.md`: skill-aware agents read the YAML
+frontmatter and the prompt/instructions that follow.
 
-`README.md` is for humans: installation, usage, and a compact overview of the patterns.
+`README.md` is for humans: usage, scope, and a compact overview of the design.
 
 ## Key files (and how they relate)
 - `SKILL.md`
   - The actual skill definition.
-  - Starts with YAML frontmatter (`---` … `---`) containing `name`, `version`, `description`, and `allowed-tools`.
-  - After the frontmatter is the editor prompt: the canonical, detailed pattern list with examples.
+  - Starts with YAML frontmatter containing only `name` and `description`.
+  - After the frontmatter is the editor prompt: the canonical scientific
+    anti-LLM writing workflow.
 - `README.md`
-  - Installation and usage instructions.
-  - Contains a summarized “25 patterns” table and a short version history.
+  - Human-facing summary of the fork and design principle.
+- `scripts/audit_text_artifacts.py`
+  - Optional deterministic artifact audit for hidden Unicode, spacing,
+    repeated phrases, and watchlist clustering.
 
 When changing behavior/content, treat `SKILL.md` as the source of truth, and update `README.md` to stay consistent.
 
 ## Common commands
-### Install the skill into Claude Code
-Recommended (clone directly into Claude Code skills directory):
+
+### Run the optional text artifact audit
+
 ```bash
-mkdir -p ~/.claude/skills
-git clone https://github.com/blader/humanizer.git ~/.claude/skills/humanizer
+python scripts/audit_text_artifacts.py path/to/text.txt
 ```
 
-Manual install/update (only the skill file):
-```bash
-mkdir -p ~/.claude/skills/humanizer
-cp SKILL.md ~/.claude/skills/humanizer/
-```
+or:
 
-## How to “run” it (Claude Code)
-Invoke the skill:
-- `/humanizer` then paste text
+```bash
+pbpaste | python scripts/audit_text_artifacts.py
+```
 
 ## Making changes safely
-### Versioning (keep in sync)
-- `SKILL.md` has a `version:` field in its YAML frontmatter.
-- `README.md` has a “Version History” section.
 
-If you bump the version, update both.
-
-### Editing `SKILL.md`
-- Preserve valid YAML frontmatter formatting and indentation.
-- Keep the pattern numbering stable unless you’re intentionally re-numbering (since the README table and examples reference the same numbering).
+- Preserve valid YAML frontmatter formatting.
+- Keep `SKILL.md` concise enough to load as a skill.
+- Keep word lists context-sensitive; do not turn them into global bans.
+- Preserve the distinction between scientific editing and detector evasion.
+- If you change behavior, update `README.md` to stay consistent.
 
 ### Documenting non-obvious fixes
-If you change the prompt to handle a tricky failure mode (e.g., a repeated mis-edit or an unexpected tone shift), add a short note to `README.md`’s version history describing what was fixed and why.
+If you change the prompt to handle a tricky failure mode, document the behavioral
+change briefly in `README.md`.
