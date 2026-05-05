@@ -1,17 +1,40 @@
 ---
 name: scientific-writing-humanizer
-description: Remove obvious LLM-generated writing patterns from scientific and academic prose while preserving existing scientific style, meaning, numbers, citations, terminology, hedging, and section-specific conventions. Use when asked to humanize, de-AI, de-slop, polish, or audit scientific text that is already meant to read as scientific writing.
+description: >-
+  Remove obvious LLM-generated writing patterns from scientific and academic prose while preserving existing scientific style, meaning, numbers, citations, terminology, hedging, and section-specific conventions. Use when asked to humanize, de-AI, de-slop, polish, proofread, lightly line-edit, or audit scientific text that is already meant to read as scientific writing. Also use only when explicitly invoked as a style guardrail for drafting short scientific or academic text from user-provided or current-context content.
 ---
 
 # Scientific Writing Humanizer
 
 ## Purpose
 
-Use this skill to remove obvious LLM-generated writing patterns from scientific or academic prose that is already meant to read as scientific writing.
+Use this skill to remove obvious LLM-generated writing patterns from scientific or academic prose while preserving the scientific register, meaning, and conventions already required by the task.
 
-The goal is not to transform text into a scientific style. The goal is to preserve the existing scientific style while removing generic, inflated, formulaic, or chatbot-like phrasing that makes the text sound machine-generated.
+The main use is rewriting existing scientific text. A secondary use is allowed only when the user explicitly asks to write new scientific text using this skill. In that case, treat the skill as a style guardrail during generation: write the requested text from the information supplied by the user or already available in the current context, then apply the same LLM-pattern cleanup before returning it.
 
-Make the smallest edit that solves the problem.
+The goal is not to transform casual content into a full scientific manuscript style. The goal is to avoid generic, inflated, formulaic, or chatbot-like phrasing while preserving scientific precision.
+
+Make the smallest edit or drafting choice that solves the problem.
+
+## Supported modes
+
+### Mode 1: rewrite existing text
+
+Use when the user provides scientific or academic prose and asks to humanize, de-AI, de-slop, polish, proofread, lightly line-edit, or audit it.
+
+In this mode, perform minimal LLM-pattern cleanup. Preserve the scientific content and change only the words, clauses, or sentences needed to remove generic, inflated, formulaic, or chatbot-like phrasing.
+
+### Mode 2: explicit generation guardrail
+
+Use only when the user explicitly asks to write new scientific or academic text using this skill.
+
+Do not refuse solely because no draft text was provided. Instead, treat the skill as a style constraint on generated scientific prose: draft the requested text while applying this skill's constraints from the start, then perform an internal final pass for LLM-pattern cleanup before returning the answer.
+
+Use only information supplied by the user or already available in the current context. Do not invent citations, methods, numerical results, statistical claims, mechanisms, limitations, implications, datasets, cohorts, disease entities, field-specific details, or author positions.
+
+If required scientific content is missing, ask for it or write a bounded placeholder rather than inventing details.
+
+Do not expose a two-step workflow unless the user asks for one. The user should receive the final text, not a generic draft followed by a visible cleanup pass.
 
 ## Core priorities
 
@@ -41,9 +64,11 @@ Use this skill for:
 - academic bios or summaries
 - scientific paragraphs produced or over-polished by an LLM
 
-Do not use this skill as a full manuscript writer, literature-review writer, citation generator, reporting-guideline checker, statistical reviewer, or scientific-style transformer.
+Do not use this skill as a full manuscript writer, literature-review writer, citation generator, reporting-guideline checker, statistical reviewer, peer reviewer, or scientific-style transformer. Short drafting from user-provided or current-context scientific content is allowed only in Mode 2, when the user explicitly invokes this skill as a style guardrail.
 
-If the user provides non-scientific text and asks for scientific writing, do not silently convert it into a manuscript-like style. Say that the request is outside this skill's narrow purpose, then perform only a light cleanup if useful.
+If the user provides non-scientific content and asks for a full scientific rewrite, do not silently convert it into manuscript-like prose. This skill may lightly clean the wording or, if explicitly invoked for generation, draft a bounded scientific-style passage only from supplied content.
+
+For rewrite mode, the input should already contain the scientific content and intended register. For explicit generation guardrail mode, the user must provide enough scientific substance or current-context material for a bounded draft.
 
 ## Starting procedure
 
@@ -56,6 +81,8 @@ Before editing, infer the likely section type only enough to avoid damaging conv
 - Figure legends should preserve panel labels, sample sizes, abbreviations, and statistical notation.
 
 Do not build a full section outline unless the user explicitly asks for structural rewriting.
+
+When explicitly invoked for new writing, do not draft generic text first and then present a cleanup step to the user. Draft under these constraints from the beginning, then do an internal final check against the watchlist and preservation rules before returning the final text.
 
 If the user provides a writing sample, use it only as a soft calibration for formality, sentence rhythm, use of "we", and terminology. Do not imitate errors or idiosyncrasies that reduce clarity.
 
@@ -249,17 +276,42 @@ Preserve:
 
 Avoid making the prose casual, chatty, humorous, overly personal, or rhetorically dramatic.
 
-### 4. Final check
+### 4. Final integrity check
 
-Before returning the answer, check that the revision did not:
+#### Rewrite mode: internal before/after check
 
-- change a number, unit, statistic, citation, comparator, or direction of effect
-- replace a defined term with a synonym
-- remove necessary hedging
-- remove legitimate passive voice from Methods
-- add a new claim, mechanism, limitation, citation, or implication
-- make the text sound like generic scientific boilerplate
-- claim that the result will pass AI detectors
+Before returning the answer in rewrite mode, compare the revised text against the original text. Confirm that the edit removed or reduced LLM-like phrasing without changing the science.
+
+Check that the revision did not:
+
+- change the scientific meaning
+- change numerical values, units, sample sizes, percentages, p-values, q-values, FDR values, confidence intervals, standard errors, odds ratios, hazard ratios, fold changes, effect sizes, or statistical direction
+- change the direction, magnitude, comparator, population, model, endpoint, or scope of a result
+- strengthen or weaken a claim without justification from the original text
+- remove necessary hedging or add unsupported certainty
+- add new citations, methods, mechanisms, limitations, implications, disease entities, cohorts, datasets, endpoints, interpretations, or author positions
+- replace defined technical terms with synonyms
+- alter gene, protein, variant, species, drug, disease, assay, method, model, cohort, endpoint, figure, table, or supplementary references
+- remove legitimate scientific repetition or appropriate passive voice
+
+If the check finds an unintended change, revise again before answering.
+
+If a possible issue cannot be resolved without author input, preserve the original wording and flag the issue briefly under author-verification notes.
+
+Do not show this before/after check to the user unless the user asks for audit details or a residual verification issue remains.
+
+#### Generation guardrail mode: internal prompt/output check
+
+Before returning the answer in generation guardrail mode, compare the draft against the user's request and current context.
+
+Check that the output:
+
+- uses only user-supplied or current-context information
+- does not invent citations, methods, numerical results, statistical claims, mechanisms, limitations, implications, datasets, cohorts, disease entities, or field-specific details
+- avoids generic LLM phrasing, inflated significance language, ceremonial framing, vague future-work language, empty transitions, unnecessary synonym cycling, and chatbot residue
+- remains concise, scientific, and bounded to the requested task
+
+If required content is missing, ask for it or use a clearly bounded placeholder rather than inventing details.
 
 ## Output formats
 
@@ -274,6 +326,17 @@ Return:
 3. Author-verification notes only if needed
 
 Keep the notes short. Do not produce a long scientific-writing review unless asked.
+
+### Generation guardrail mode
+
+Use when the user explicitly asks to write new scientific or academic text using this skill.
+
+Return:
+
+1. The requested text
+2. Brief notes only if needed, for example if a placeholder was used or scientific content requires author verification
+
+Do not return a visible draft-then-cleanup sequence. The final answer should already reflect the skill's constraints.
 
 ### Audit mode
 
@@ -359,3 +422,6 @@ Edit it when it is:
 - Do not add hidden Unicode, odd spacing, deliberate typos, or detector-evasion artifacts.
 - Do not claim that the text will bypass AI detectors.
 - Do not perform a full manuscript review unless the user asks for one.
+- Do not automatically use this skill for every scientific-writing task unless the user explicitly invokes it or asks for humanizing/de-AI/polishing/proofreading/light line-editing.
+- Do not generate plausible scientific facts to make a new paragraph sound complete.
+- Do not expose a two-step draft-then-clean workflow when the user explicitly asked to write using this skill.

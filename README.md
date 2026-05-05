@@ -1,8 +1,8 @@
 # Scientific Writing Humanizer
 
-A lightweight skill for removing obvious LLM-generated writing patterns from scientific and academic prose while preserving the scientific style already present.
+A lightweight skill for removing obvious LLM-generated writing patterns from scientific and academic prose while preserving the scientific style required by the task.
 
-This is not a general scientific rewriter. It is a narrow editing skill for text that is already intended to be scientific, academic, or manuscript-like.
+The main use is rewriting existing scientific text. The skill can also act as a manual style guardrail when explicitly invoked during generation, for example: "write this paragraph using the scientific-writing-humanizer skill." It is not a general scientific rewriter or manuscript-writing system.
 
 ## Purpose
 
@@ -17,17 +17,41 @@ It is designed to avoid a common failure mode of generic "humanizers": removing 
 - Preserves legitimate scientific conventions, including technical repetition and appropriate passive voice.
 - Treats suspicious words as context-sensitive watch signals, not banned words.
 - Uses minimal edits rather than broad rephrasing.
+- Can act as a style guardrail during generation when explicitly invoked, so the agent writes under the anti-LLM-pattern constraints from the start.
 
 ## What this does not do
 
 - It does not transform casual prose into scientific prose.
-- It does not write manuscripts, literature reviews, methods sections, or reporting-guideline-compliant papers.
+- It does not act as a full manuscript writer, literature-review writer, reporting-guideline checker, or scientific-content generator.
 - It does not add citations, mechanisms, results, limitations, or implications.
+- It does not invent citations, methods, numerical results, mechanisms, datasets, limitations, or implications when used for generation.
 - It does not score text as AI-generated or human-generated.
 - It does not promise AI-detector evasion.
 - It does not include a detector, CLI audit tool, or mechanical artifact scanner.
 
 Dedicated tools already exist for mechanical AI-pattern scanning and detector-style audits, such as `ai-text-audit`, `QRY91/slopsquid`, and `brandonwise/humanizer`. This repository deliberately stays focused on the prompt-level scientific editing skill.
+
+## Usage modes
+
+This skill supports two uses.
+
+### 1. Rewrite existing scientific text
+
+Use this when you provide a paragraph, abstract, figure legend, response to reviewers, or other scientific prose and ask the agent to humanize, de-AI, de-slop, polish, proofread, or lightly line-edit it.
+
+The skill should make minimal edits that remove LLM-like patterns while preserving scientific meaning, numbers, citations, terminology, hedging, and section conventions.
+
+### 2. Explicit generation guardrail
+
+Use this when you explicitly ask the agent to write new scientific or academic text using the `scientific-writing-humanizer` skill.
+
+```text
+Write a short paragraph about this project using the scientific-writing-humanizer skill.
+```
+
+In this mode, the skill acts as a style guardrail during drafting. The agent should write under the skill's constraints from the start and perform an internal final pass before returning the text. It should use only information you supplied or information already present in the current context.
+
+This mode is not intended as an automatic default for every scientific-writing task. It is also not a full manuscript-writing, citation-generation, literature-review, or reporting-guideline tool.
 
 ## Runtime skill
 
@@ -71,7 +95,7 @@ Use this skill for:
 - scientific summaries
 - academic text that has become too LLM-like after drafting or polishing
 
-The input should already contain the scientific content and intended register. The skill should not invent missing scientific detail.
+For rewrite mode, the input should already contain the scientific content and intended register. For explicit generation guardrail mode, the prompt should provide enough scientific substance to draft from without inventing details.
 
 ## Responsible use
 
