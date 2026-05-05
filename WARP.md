@@ -1,52 +1,34 @@
 # WARP.md
 
-This file provides guidance to WARP (warp.dev) when working with code in this repository.
+This file provides guidance to WARP (warp.dev) when working with this repository.
 
 ## What this repo is
-This repository is a **scientific writing skill** implemented mostly as Markdown,
-with one optional Python audit script.
 
-The runtime artifact is `SKILL.md`: skill-aware agents read the YAML
-frontmatter and the prompt/instructions that follow.
+This repository is a narrow prompt-level skill for lightly editing scientific or academic prose that is already meant to read as scientific writing.
 
-`README.md` is for humans: usage, scope, and a compact overview of the design.
+The runtime artifact is `SKILL.md`: skill-aware agents read the YAML frontmatter and the instructions that follow.
 
-## Key files (and how they relate)
+`README.md` is for humans: scope, usage, responsible-use framing, and source lineage.
+
+## Key files
+
 - `SKILL.md`
   - The actual skill definition.
-  - Starts with YAML frontmatter containing only `name` and `description`.
-  - After the frontmatter is the editor prompt: the canonical scientific
-    anti-LLM writing workflow.
+  - Starts with minimal YAML frontmatter containing `name` and `description`.
+  - Defines the canonical behavior: remove obvious LLM-generated writing patterns while preserving existing scientific style, meaning, numbers, citations, terminology, hedging, and section-specific conventions.
 - `README.md`
-  - Human-facing summary of the fork and design principle.
-- `scripts/audit_text_artifacts.py`
-  - Optional deterministic artifact audit for hidden Unicode, spacing,
-    repeated phrases, and watchlist clustering.
+  - Human-facing summary of the product scope and design principle.
+- `LICENSE`
+  - MIT license attribution for upstream and this adaptation.
 
-When changing behavior/content, treat `SKILL.md` as the source of truth, and update `README.md` to stay consistent.
-
-## Common commands
-
-### Run the optional text artifact audit
-
-```bash
-python scripts/audit_text_artifacts.py path/to/text.txt
-```
-
-or:
-
-```bash
-pbpaste | python scripts/audit_text_artifacts.py
-```
+There is intentionally no detector, score generator, CLI audit tool, mechanical scanner, benchmark suite, or bundled script in this repository. Dedicated external tools already exist for that layer.
 
 ## Making changes safely
 
+- Keep this repository focused on prompt-level scientific LLM-pattern cleanup.
 - Preserve valid YAML frontmatter formatting.
 - Keep `SKILL.md` concise enough to load as a skill.
-- Keep word lists context-sensitive; do not turn them into global bans.
-- Preserve the distinction between scientific editing and detector evasion.
-- If you change behavior, update `README.md` to stay consistent.
-
-### Documenting non-obvious fixes
-If you change the prompt to handle a tricky failure mode, document the behavioral
-change briefly in `README.md`.
+- Keep watchlists context-sensitive; do not turn them into global word bans.
+- Preserve the distinction between removing LLM-like phrasing and optimizing for AI-detector evasion.
+- Do not add scripts, tests, examples, benchmarks, workflow files, or source catalogs unless the product scope explicitly changes.
+- If behavior changes, update `README.md` to stay consistent.

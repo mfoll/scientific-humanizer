@@ -1,239 +1,311 @@
 ---
 name: scientific-writing-humanizer
-description: Edit scientific manuscripts, abstracts, grants, figure legends, reviewer responses, and other academic prose to remove obvious LLM-generated writing patterns while preserving scientific meaning, technical terminology, author voice, citation logic, cautious hedging, and journal-appropriate register. Use when asked to humanize, de-slop, de-AI, polish, audit, rewrite, or detector-risk-check scientific or academic text without making it casual or generic.
+description: Remove obvious LLM-generated writing patterns from scientific and academic prose while preserving existing scientific style, meaning, numbers, citations, terminology, hedging, and section-specific conventions. Use when asked to humanize, de-AI, de-slop, polish, or audit scientific text that is already meant to read as scientific writing.
 ---
 
 # Scientific Writing Humanizer
 
 ## Purpose
 
-Use this skill as a scientific line editor and AI-pattern auditor. The goal is not to make a model "talk like a human" and not to add casual personality. The goal is to make scientific prose read like careful author-edited manuscript text: precise, evidence-bound, field-aware, and free of obvious LLM artifacts.
+Use this skill to remove obvious LLM-generated writing patterns from scientific or academic prose that is already meant to read as scientific writing.
 
-This skill adapts generic AI-writing cleanup patterns to scientific writing. It treats suspicious words as context-dependent signals, not banned words. Words such as "robust", "comprehensive", "crucial", "significant", "highlight", "serves as", and "it is worth noting" are acceptable when they are scientifically precise, conventional for the field, and supported by the surrounding evidence.
+The goal is not to transform text into a scientific style. The goal is to preserve the existing scientific style while removing generic, inflated, formulaic, or chatbot-like phrasing that makes the text sound machine-generated.
 
-## Non-Negotiable Priorities
+Make the smallest edit that solves the problem.
+
+## Core priorities
 
 Apply these priorities in order:
 
-1. Preserve scientific content, numerical values, uncertainty, citations, nomenclature, and claim strength.
-2. Preserve field and journal conventions, including legitimate passive voice in Methods and standard technical phrasing.
-3. Preserve consistent terminology. Do not synonym-spin defined terms.
-4. Improve clarity, concision, paragraph flow, and claim-evidence alignment.
-5. Reduce obvious LLM-pattern risk without degrading the prose or adding obfuscation.
+1. Preserve scientific meaning, numerical values, statistical direction, uncertainty, citations, terminology, nomenclature, figure/table references, and claim strength.
+2. Preserve the existing scientific register, section type, and author voice.
+3. Preserve legitimate scientific conventions, including technical repetition, cautious hedging, formal tone, passive voice where appropriate, and standard field phrases.
+4. Remove or reduce LLM-like patterns only when they are generic, inflated, unsupported, repetitive, or structurally formulaic.
+5. Improve clarity and concision only where it supports the edit. Do not perform a broad scientific rewrite unless explicitly asked.
 
-Never insert hidden Unicode, spacing tricks, deliberate errors, fake citations, fake specificity, or awkward synonym substitutions to evade detectors.
+Never insert hidden Unicode, deliberate mistakes, awkward synonym substitutions, fake citations, fake specificity, or detector-evasion artifacts.
 
-## When Starting
+## Scope
 
-Infer the likely section type: Abstract, Introduction, Methods, Results, Discussion, figure legend, grant text, cover letter, or reviewer response. If the target journal, field, or section type is missing, proceed with reasonable assumptions and state only the assumptions that affect edits.
+Use this skill for:
 
-If the user provides a writing sample, calibrate to it as a soft guide:
+- abstracts
+- introductions
+- methods text
+- results text
+- discussion text
+- figure legends
+- grant text
+- cover letters
+- reviewer responses
+- academic bios or summaries
+- scientific paragraphs produced or over-polished by an LLM
 
-- sentence length and rhythm
-- preferred level of formality
-- use of "we", passive voice, and transitions
-- field-specific terminology
-- typical paragraph openings and closing moves
+Do not use this skill as a full manuscript writer, literature-review writer, citation generator, reporting-guideline checker, statistical reviewer, or scientific-style transformer.
 
-Do not imitate errors or idiosyncrasies that reduce clarity.
+If the user provides non-scientific text and asks for scientific writing, do not silently convert it into a manuscript-like style. Say that the request is outside this skill's narrow purpose, then perform only a light cleanup if useful.
 
-## Editing Workflow
+## Starting procedure
 
-### 1. Claim and Evidence Guard
+Before editing, infer the likely section type only enough to avoid damaging conventions:
 
-Before rewriting, identify the major claims and the evidence supporting them.
+- Methods can tolerate more passive voice and procedural repetition.
+- Results should preserve numbers, comparisons, p-values, confidence intervals, effect sizes, and directionality.
+- Discussion can contain interpretation, but the rewrite must not add new mechanisms or implications.
+- Reviewer responses should stay direct, respectful, and evidence-bound.
+- Figure legends should preserve panel labels, sample sizes, abbreviations, and statistical notation.
 
-- Keep claims no stronger than the data, citation, or stated result allows.
-- Do not add new mechanisms, implications, citations, statistics, disease entities, cohorts, methods, or limitations.
-- If a claim seems unsupported, weaken it or flag it instead of inventing support.
-- Preserve statistical direction, magnitude, uncertainty, and comparator language.
+Do not build a full section outline unless the user explicitly asks for structural rewriting.
 
-### 2. Scientific Style Pass
+If the user provides a writing sample, use it only as a soft calibration for formality, sentence rhythm, use of "we", and terminology. Do not imitate errors or idiosyncrasies that reduce clarity.
 
-Edit for good scientific writing before editing for AI patterns.
+## Editing workflow
 
-- Replace clutter: "in order to" -> "to"; "due to the fact that" -> "because"; "has the ability to" -> "can".
-- Revive verbs when it improves clarity: "performed an analysis of" -> "analyzed"; "provides evidence for" -> "supports".
-- Use active voice when it clarifies the actor, especially in Introduction, Results, Discussion, grants, and responses.
-- Keep passive voice when the actor is irrelevant, conventional, or when the object must be emphasized, especially in Methods.
-- Keep one main message per paragraph; the first sentence should usually orient the reader.
-- Maintain sentence-to-sentence logic: cause, contrast, consequence, refinement, example, or limitation.
-- Use old-to-new information flow: begin sentences with context the reader already has, then place the new or important information near the end.
-- Keep the main verb close to the subject when possible; long subject-to-verb delays make scientific sentences harder to parse.
-- Keep technical nouns self-contained. Define abbreviations at first use if the surrounding text requires it.
+### 1. Preservation pass
 
-### 3. Terminology Consistency Pass
+Identify content that must not change:
 
-Scientific repetition is often correct.
+- numerical values and units
+- sample sizes
+- p-values, q-values, FDR values, confidence intervals, standard errors, odds ratios, hazard ratios, fold changes, and effect sizes
+- comparison direction and comparator groups
+- citations and citation order
+- figure, table, and supplementary references
+- gene, protein, variant, species, drug, disease, assay, method, cohort, endpoint, and model names
+- abbreviations and defined terms
+- hedging and uncertainty markers that reflect the evidence
 
-- Repeat the defined term when it names a method, cohort, variable, group, mutation, assay, model, endpoint, or disease entity.
-- Do not replace a technical term with a near-synonym just to avoid repetition.
-- Flag term drift: "tumor samples", "specimens", "cases", and "cohort" may refer to different things.
-- Keep gene/protein/species formatting and capitalization consistent with the user's text unless asked to standardize it.
-- Preserve section-specific labels such as arm names, model names, comparison groups, figure panel identifiers, and endpoint names.
+If a sentence contains protected content, edit around it rather than rewriting it freely.
 
-### 4. AI-Pattern Audit
+### 2. LLM-pattern pass
 
-Flag and edit these only when they make the scientific prose generic, inflated, or formulaic.
+Look for these patterns. Edit them only when they make the prose generic, inflated, or formulaic.
 
-**Significance inflation**
+#### Chatbot residue
 
-- Watch: "crucial", "pivotal", "key", "vital", "transformative", "groundbreaking", "landmark", "important", "highlights the importance of", "underscores".
-- Keep if the claim is precise and supported: "a crucial cysteine residue", "robust standard errors", "comprehensive genomic profiling".
-- Edit if it is ceremonial: "This pivotal finding underscores..." -> state the finding and its direct implication.
+Remove assistant-facing residue:
 
-**Copula avoidance and ceremonial framing**
+- "Of course"
+- "Here is"
+- "I hope this helps"
+- "Let me know"
+- "as an AI"
+- "based on available information"
 
-- Watch: "serves as", "stands as", "represents", "marks", "acts as a testament to".
-- Keep "serves as" when it describes function precisely: "albumin serves as a carrier protein".
-- Edit when it avoids a simpler verb: "This result serves as evidence that..." -> "This result supports..."
+#### Significance inflation
 
-**Present-participle chains**
+Watch for unsupported or ceremonial emphasis:
 
-- Watch sentence tails with "highlighting", "underscoring", "reflecting", "showcasing", "emphasizing", "contributing to", "ensuring".
-- Edit when they add vague depth without evidence.
-- Keep when they express a real relationship and are grammatically cleaner than a second sentence.
+- "crucial"
+- "pivotal"
+- "key"
+- "vital"
+- "transformative"
+- "groundbreaking"
+- "important implications"
+- "highlights the importance of"
+- "underscores"
 
-**Generic transitions and throat-clearing**
+Keep the term when it is precise or conventional: "a crucial cysteine residue", "robust standard errors", "comprehensive genomic profiling", "statistically significant".
 
-- Watch: "It is worth noting that", "It is important to note that", "Interestingly", "Notably", "In this context", "Furthermore", "Moreover", "Additionally".
-- Delete or replace when they do not change the meaning.
-- Keep "notably" or "interestingly" only when the contrast or surprise is specific.
+Edit when it inflates a claim without adding information.
 
-**Rule-of-three and over-balanced structure**
+Example:
 
-- Watch repeated triads, perfectly parallel clauses, and uniformly sized paragraphs.
-- Use the number of items the science actually needs.
-- Break symmetry when the evidence is asymmetric.
-
-**Vague attribution**
-
-- Watch: "studies show", "experts argue", "the literature suggests", "emerging evidence indicates".
-- Replace with a specific citation placeholder only if the user supplied it.
-- Otherwise write a more bounded claim: "Several studies have reported..." or flag that the claim needs a citation.
-
-**Over-hedging and under-hedging**
-
-- Remove stacked hedges: "may potentially suggest" -> "may suggest".
-- Add a hedge when causal, translational, or mechanistic claims outrun the evidence.
-- Preserve appropriate scientific caution.
-
-**Generic conclusions and future-work filler**
-
-- Watch: "paves the way", "opens new avenues", "future studies are warranted", "holds promise", "important implications".
-- Replace with concrete next steps, limits, or implications when the manuscript provides them.
-- If no concrete implication is available, keep the conclusion modest.
-
-**Chatbot residue**
-
-- Remove assistant artifacts: "Of course", "Here is", "I hope this helps", "Let me know", "as an AI", "based on available information".
-
-### 5. Detector-Risk Artifact Audit
-
-Treat detector risk as a quality-control signal, not as the target.
-
-Look for:
-
-- Hidden or unusual Unicode characters, including thin spaces, zero-width spaces, non-breaking spaces, and mixed quote styles.
-- Unnatural spacing, especially missing spaces after sentence-final punctuation.
-- Repeated phrases or repeated tortured substitutions.
-- Awkward one-to-one synonym replacement.
-- Too-smooth paragraph rhythm: every paragraph the same length, every sentence medium-length, every transition explicit.
-- Excessive watchlist clustering: many generic AI-associated words in a short span.
-
-If the text is in a local file, optionally run:
-
-```bash
-python scripts/audit_text_artifacts.py path/to/text.txt
+```text
+This pivotal finding underscores the importance of immune contexture in cancer.
 ```
 
-Use the script output as a mechanical aid. Do not optimize blindly for it.
+Prefer:
 
-## Section-Specific Guidance
+```text
+This finding links immune contexture to the measured cancer outcome.
+```
 
-### Abstract
+Only use the specific outcome if it is already present in the user's text.
 
-- Make the objective, design, main result, and conclusion explicit.
-- Keep claims tightly scoped to the results.
-- Avoid generic opening sentences about broad importance unless the target journal expects them.
-- Do not add citations unless the journal style requires them.
+#### Ceremonial framing and copula avoidance
 
-### Introduction
+Watch for inflated substitutes for simpler verbs:
 
-- Build from field context to a precise gap or unresolved question.
-- Avoid "limited understanding" boilerplate unless the exact limitation is named.
-- State the study objective or hypothesis directly.
-- Keep novelty language factual rather than promotional.
+- "serves as"
+- "stands as"
+- "represents"
+- "marks"
+- "acts as a testament to"
 
-### Methods
+Keep them when they describe a real function: "albumin serves as a carrier protein".
 
-- Prioritize reproducibility over stylistic polish.
-- Passive voice is often acceptable when the procedure matters more than the actor.
-- Do not simplify technical terms if simplification changes meaning.
-- Preserve chronological and procedural detail.
+Edit them when they avoid a simpler scientific verb.
 
-### Results
+Example:
 
-- Present findings before interpretation.
-- Keep numbers, directionality, comparators, confidence intervals, and p-values unchanged.
-- Avoid "interestingly" unless the result contradicts a clear expectation.
-- Do not add mechanistic explanation unless already shown by the data.
+```text
+This result serves as evidence that the pathway is activated.
+```
 
-### Discussion
+Prefer:
 
-- Distinguish observation, interpretation, limitation, and implication.
-- Compare with cited literature without exaggerating novelty.
-- Keep limitations specific; avoid generic limitation paragraphs.
-- Avoid ending with broad "paves the way" language.
+```text
+This result supports pathway activation.
+```
 
-### Reviewer Responses
+#### Present-participle tails
 
-- Be direct, respectful, and evidence-based.
-- State what changed and where.
-- Do not over-apologize or over-praise reviewers.
-- When disagreeing, give the reason and the supporting evidence.
+Watch sentence endings with:
 
-## Output Formats
+- "highlighting"
+- "underscoring"
+- "reflecting"
+- "showcasing"
+- "emphasizing"
+- "contributing to"
+- "ensuring"
 
-### Rewrite Mode
+Edit when the tail adds generic depth without evidence.
 
-Use when the user asks to rewrite, humanize, polish, or de-AI text.
+Do not remove the construction if it expresses a real relationship more cleanly than a separate sentence.
+
+#### Generic transitions and throat-clearing
+
+Remove or reduce empty signposting:
+
+- "It is worth noting that"
+- "It is important to note that"
+- "Interestingly"
+- "Notably"
+- "In this context"
+- "Furthermore"
+- "Moreover"
+- "Additionally"
+
+Keep a transition if it marks a real contrast, sequence, or exception.
+
+#### Vague attribution
+
+Watch vague source language:
+
+- "studies show"
+- "experts argue"
+- "the literature suggests"
+- "emerging evidence indicates"
+- "previous research has demonstrated"
+
+If the user supplied citations, preserve them and make the attribution specific enough for the sentence. If no citation is available, do not invent one. Either weaken the claim or flag it for author verification.
+
+#### Rule-of-three and over-balanced structure
+
+LLM prose often forces claims into tidy triplets or repeated parallel clauses. Use only the number of items the science requires. Preserve parallel structure when it improves readability or reflects a real experimental design.
+
+#### Elegant variation and synonym cycling
+
+Do not vary technical terms just to avoid repetition. Scientific repetition is often correct.
+
+Keep the defined term for methods, groups, endpoints, cohorts, variants, assays, models, diseases, and variables.
+
+Flag or fix term drift only when the text appears to use different words for the same defined object.
+
+#### Over-hedging and under-hedging
+
+Remove stacked hedges:
+
+```text
+may potentially suggest
+```
+
+Prefer:
+
+```text
+may suggest
+```
+
+Add hedging only when a causal, mechanistic, clinical, or translational claim outruns the evidence already stated in the text. Do not make confident claims more cautious by default.
+
+#### Generic conclusions and future-work filler
+
+Watch for vague endings:
+
+- "paves the way"
+- "opens new avenues"
+- "future studies are warranted"
+- "holds promise"
+- "important implications"
+
+Replace them with concrete next steps or limitations only if those are already present in the text. Otherwise, make the conclusion modest rather than inventing specificity.
+
+### 3. Minimal rewrite pass
+
+Rewrite only the affected sentences or clauses unless a larger paragraph-level edit is necessary for coherence.
+
+Preserve:
+
+- paragraph order
+- section structure
+- citation style
+- tense pattern unless clearly wrong
+- technical terms
+- authorial stance
+- formal scientific tone
+
+Avoid making the prose casual, chatty, humorous, overly personal, or rhetorically dramatic.
+
+### 4. Final check
+
+Before returning the answer, check that the revision did not:
+
+- change a number, unit, statistic, citation, comparator, or direction of effect
+- replace a defined term with a synonym
+- remove necessary hedging
+- remove legitimate passive voice from Methods
+- add a new claim, mechanism, limitation, citation, or implication
+- make the text sound like generic scientific boilerplate
+- claim that the result will pass AI detectors
+
+## Output formats
+
+### Rewrite mode
+
+Use when the user asks to humanize, de-AI, de-slop, polish, or rewrite text.
 
 Return:
 
 1. Revised text
-2. Brief edit notes, grouped by scientific clarity and AI-pattern risk
-3. Residual issues or claims needing author verification, only if present
+2. Brief notes on the main LLM-pattern edits made
+3. Author-verification notes only if needed
 
-### Audit Mode
+Keep the notes short. Do not produce a long scientific-writing review unless asked.
 
-Use when the user asks to check, review, score informally, or diagnose text.
+### Audit mode
 
-Return findings in this format:
+Use when the user asks to diagnose or review text without rewriting it.
+
+Use this compact format:
 
 ```text
 Finding: [short label]
-Severity: critical | major | minor
+Severity: major | minor
 Original: [short excerpt]
-Why it matters: [specific reason]
-Suggested revision: [replacement or action]
+Why it reads as LLM-like: [specific reason]
+Suggested action: [replacement or delete/keep]
 ```
 
-### Interactive Mode
+Do not score the text as AI-generated or human-generated.
 
-Use when the user asks to work paragraph by paragraph.
+### Interactive mode
+
+Use only when the user asks to work paragraph by paragraph.
 
 For each paragraph, provide:
 
-1. Original issue summary
-2. Revised paragraph
-3. What changed and why
+1. Revised paragraph
+2. Short explanation of what changed
+3. Any author-verification issue
 
-Then wait for the user's decision before continuing.
+Then stop for the user's decision before continuing.
 
-## Context-Sensitive Watchlist
+## Context-sensitive watchlist
 
-These are not banned. Treat them as signals that require context:
+These are not banned words. Treat them as signals that require context:
 
 - crucial
 - comprehensive
@@ -259,40 +331,31 @@ These are not banned. Treat them as signals that require context:
 - paves the way
 - holds promise
 
-Keep a watchlisted word when it is:
+Keep a watchlisted expression when it is:
 
-- part of standard field usage
-- attached to a specific object, mechanism, result, or statistical method
-- less awkward than the alternative
-- present in the author's established voice
+- part of standard scientific usage
+- attached to a specific object, method, result, or statistical concept
+- necessary for the target field or journal
+- already part of the author's consistent terminology
+- clearer than the alternative
 
 Edit it when it is:
 
 - unsupported by evidence
-- repeated across nearby sentences
+- repeated nearby
 - used to inflate significance
-- a substitute for naming the actual result
+- a substitute for the actual result
 - part of generic LLM scaffolding
 
-## What Not To Do
+## What not to do
 
-- Do not make scientific prose casual, chatty, humorous, or "soulful".
-- Do not ban words globally.
+- Do not transform the text into a different scientific style.
+- Do not make the prose casual or add "personality".
+- Do not globally ban words.
 - Do not synonym-spin technical vocabulary.
 - Do not remove necessary hedging.
-- Do not remove legitimate passive voice from Methods just to satisfy a style rule.
-- Do not add undocumented citations, findings, methods, limitations, or implications.
-- Do not insert deliberate typos, invisible characters, strange punctuation, or spacing artifacts.
-- Do not claim that a rewrite will bypass AI detectors.
-
-## Source Synthesis
-
-This skill synthesizes:
-
-- `blader/humanizer`: generic AI-writing pattern list, adapted here as context-sensitive scientific watch signals.
-- `labarba/sciwrite`: clutter extraction, active/passive judgment, sentence architecture, terminology consistency, and numerical/citation caution.
-- `Master-cai/Research-Paper-Writing-Skills`: paragraph role, reverse outlining, and claim-evidence alignment.
-- `K-Dense-AI/claude-scientific-writer` and `OpenLAIR/dr-claw`: IMRAD structure, reporting guidelines, field terminology, and section-specific scientific writing workflow.
-- `hanlulong/econ-writing-skill`: reader-first writing, concrete claims over vague contribution language, and discipline-specific style.
-- Nature Methods and Gopen/Swan-style guidance: audience-first manuscript design, every word doing useful work, old-to-new information flow, and sentence stress.
-- Pangram humanizer evidence: hidden Unicode, spacing artifacts, tortured phrases, repetitive substitutions, and the limitation that detector-oriented humanizers often degrade text.
+- Do not remove legitimate passive voice from Methods.
+- Do not add citations, findings, mechanisms, limitations, or implications.
+- Do not add hidden Unicode, odd spacing, deliberate typos, or detector-evasion artifacts.
+- Do not claim that the text will bypass AI detectors.
+- Do not perform a full manuscript review unless the user asks for one.
