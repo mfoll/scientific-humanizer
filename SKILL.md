@@ -16,6 +16,12 @@ The goal is not to transform casual content into a full scientific manuscript st
 
 Make the smallest edit or drafting choice that solves the problem.
 
+Preserve technical density, but reduce rhetorical density.
+
+Technical density includes field terms, gene and protein names, variant notation, disease entities, assay names, method names, statistical notation, citation labels, cohort names, endpoint names, and figure/table references. These are often necessary in scientific writing and should not be simplified merely because they look dense.
+
+Rhetorical density includes avoidable stacking of claims, recommendations, transitions, caveats, implications, and long comma-separated lists in one sentence. Split or simplify these when doing so preserves the science and improves readability.
+
 ## Supported modes
 
 ### Mode 1: rewrite existing text
@@ -35,6 +41,8 @@ Use only information supplied by the user or already available in the current co
 If required scientific content is missing, ask for it or write a bounded placeholder rather than inventing details.
 
 Do not expose a two-step workflow unless the user asks for one. The user should receive the final text, not a generic draft followed by a visible cleanup pass.
+
+Operating rule: for existing text, perform minimal LLM-pattern cleanup. For new text, only when explicitly invoked, draft under the same constraints from the start and run an internal final pass before returning. Use only user-supplied or current-context content. If the required scientific content is missing, ask for it or write a bounded placeholder rather than inventing details.
 
 ## Core priorities
 
@@ -85,6 +93,24 @@ Do not build a full section outline unless the user explicitly asks for structur
 When explicitly invoked for new writing, do not draft generic text first and then present a cleanup step to the user. Draft under these constraints from the beginning, then do an internal final check against the watchlist and preservation rules before returning the final text.
 
 If the user provides a writing sample, use it only as a soft calibration for formality, sentence rhythm, use of "we", and terminology. Do not imitate errors or idiosyncrasies that reduce clarity.
+
+## Reviewer-report phrasing
+
+In review reports, manuscript critiques, and reviewer-style recommendations, direct recommendation language is acceptable. Do not treat repeated phrases such as "the authors should" as automatically LLM-like.
+
+When many recommendations appear in sequence, reduce monotony only where doing so clarifies the reason for the recommendation. Do not vary phrasing merely for elegance.
+
+Acceptable alternatives include:
+
+- "To establish malignant identity, ..."
+- "This claim needs ..."
+- "A stronger analysis would ..."
+- "The manuscript should ..."
+- "At minimum, ..."
+
+Use variation to clarify the scientific function of the sentence: diagnosis, requirement, rationale, minimum standard, or suggested analysis.
+
+For long lists of required analyses or revisions, bullets are acceptable when the user asked for a review, report, critique, or response-style output. Preserve formal, direct, evidence-bound reviewer language.
 
 ## Editing workflow
 
@@ -260,7 +286,27 @@ Watch for vague endings:
 
 Replace them with concrete next steps or limitations only if those are already present in the text. Otherwise, make the conclusion modest rather than inventing specificity.
 
-### 3. Minimal rewrite pass
+### 3. Density and rhythm pass
+
+After removing LLM-like phrasing, check whether the revision has become too compressed.
+
+Do not optimize for AI-detector metrics such as average sentence length, function-word ratio, mean word length, or proper-noun density. In scientific writing, long technical terms, proper nouns, gene symbols, method names, citations, and low function-word ratios can be legitimate.
+
+However, revise sentences when scientific content has been packed into a single overly dense construction. Prefer one scientific move per sentence when possible.
+
+Look especially for:
+
+- sentences longer than about 35-40 words that contain multiple recommendations, several citations, or several methods
+- long comma-separated lists embedded inside an already complex sentence
+- repeated sentence openings across nearby sentences, especially in reviewer-style text
+- stacked noun phrases where a short orienting phrase would improve readability
+- sentences that combine summary, interpretation, and recommendation in one move
+
+Fix these only when the edit preserves meaning and improves readability. Do not split technical names, gene symbols, variant notation, statistical expressions, assay names, or standard method names.
+
+When a long list contains several independent requested actions, analyses, or critiques, bullets are acceptable if the user asked for a review, report, critique, or response-style document. Do not convert ordinary manuscript prose into bullets unless the user requested that format.
+
+### 4. Minimal rewrite pass
 
 Rewrite only the affected sentences or clauses unless a larger paragraph-level edit is necessary for coherence.
 
@@ -276,7 +322,7 @@ Preserve:
 
 Avoid making the prose casual, chatty, humorous, overly personal, or rhetorically dramatic.
 
-### 4. Final integrity check
+### 5. Final integrity check
 
 #### Rewrite mode: internal before/after check
 
@@ -409,6 +455,31 @@ Edit it when it is:
 - used to inflate significance
 - a substitute for the actual result
 - part of generic LLM scaffolding
+
+## If the user provides AI-detector feedback
+
+Treat AI-detector feedback as a noisy readability diagnostic, not as ground truth.
+
+Do not rewrite merely to satisfy detector metrics. In scientific prose, the following are not automatically LLM signatures:
+
+- long technical terms
+- gene, protein, disease, method, assay, cohort, endpoint, or model names
+- proper nouns and citations
+- formal reviewer language
+- cautious hedging
+- passive voice in Methods
+- dense but necessary scientific content
+
+Use detector feedback only to identify potentially useful edits:
+
+- overloaded sentences
+- repeated generic openings
+- unnecessary ceremonial framing
+- vague transitions
+- avoidable list-heavy compression
+- formulaic conclusions or future-work language
+
+If detector feedback conflicts with scientific precision, preserve scientific precision. Do not add filler, casual wording, artificial pronouns, hidden characters, deliberate errors, or awkward synonym substitutions to manipulate detector signals.
 
 ## What not to do
 
